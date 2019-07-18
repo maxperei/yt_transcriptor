@@ -1,9 +1,10 @@
-from optparse import OptionParser
+import os
+import sys
 
 
 def load_file(filename):
     try:
-        f = open(filename, "w+")
+        f = open(filename, "rw+")
         return f
     except:
         print("Error loading file: " + filename)
@@ -11,20 +12,22 @@ def load_file(filename):
 
 
 def main(file, outfilename):
-    outfile = open(outfilename, "w+")
-    for x in file.readlines():
-        # todo catch pattern w/ regex
-        outfile.write(x)
+    outfile = open(outfilename, "rw+")
+    lines = file.readlines()
+    i = j = 1
+    while i < len(lines):
+        if i % 3:
+            if j % 2:
+                outfile.write(lines[i])
+                outfile.seek(-1, os.SEEK_CUR)
+                outfile.write(" ")
+            j += 1
+        i += 1
     outfile.close()
 
 
 ########################################
-parser = OptionParser(usage="usage: %prog input_file output_file")
-(args) = parser.parse_args()
+args = sys.argv
+f = load_file(args[1])
 
-(f) = load_file(args[0])
-
-if len(args[1]) == 0:
-    args[1] = args[0]
-
-main(f, args[1])
+main(f, args[2])
